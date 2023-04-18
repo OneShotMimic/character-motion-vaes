@@ -1,11 +1,6 @@
-# Character Controllers using Motion VAEs
-
-This repo is the codebase for the SIGGRAPH 2020 paper with the title above. 
-Please find the paper and demo at our project website https://www.cs.ubc.ca/~hyuling/projects/mvae/.
-
 ## Quick Start
 
-This library should run on Linux, Mac, or Windows.
+This library should run on Linux, Mac (Intel version), or Windows. It is used for motion data structure pre-testing in Single-shot Motion Mimicking for Physics-based Character Animation project. 
 
 ### Install Requirements
 
@@ -17,48 +12,16 @@ pip install -r requirements
 NOTE: installing pybullet requires Visual C++ 14 or higher. You can get it from here: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 ```
 
-### Run Pretrained Models
+### Training data requirement
 
-Run pretrained models using the play scripts.
-The results are rendered in [PyBullet](https://github.com/bulletphysics/bullet3).
-Use mouse to control camera.
-Hit `r` reset task and `g` for additional controls.
+All the data should be stored in the directory ```{data_dir}``` specified at the beginning of **motion_parser/train_parser.py**. For a source labeled as ```{label}```, its motion data should be stored in ```{data_dir}/x_{label}.pt``` and its control parameters should in ```{data_dir}/actor_{label}.pt```. Predicted control parameters will be stored in ```{data_dir}/pred_{label}.pt```.
 
-```bash
-cd vae_motion
+The motion data is a sequence of 1\*267 vectors, and the control and output parameters are sequences of 1\*32 vectors. 
 
-# Random Walk
-python play_mvae.py --vae models/posevae_c1_e6_l32.pt
+### Train a motion parser
 
-# Control Tasks: {Target, Joystick, PathFollow, HumanMaze}Env-v0
-python play_controller.py --dir models --env TargetEnv-v0
-```
+Specify the data directory, train label and testing label at the beginning of **motion_parser/train_parser.py**. Run **motion_parser/train_parser.py**. Learning rate and number of epochs are specified in main function.
 
-## Train from Scratch
-Train models from scratch using train scripts.
+### Modify model structure.
 
-The `train_mvae.py` script assumes the mocap data to be at `environments/mocap.npz`.
-The original training data is not included in this repo; but can be easily extracted from other public datasets.
-Please refer to our paper for more detail on the input format.
-All training parameters can be set inside `main()` in the code.
-
-Use `train_controller.py` to train controllers on top of trained MVAE models.
-The trained model path, control task, and learning hyperparameters can be set inside `main()` in the code.
-The task names follow the same convention as above, e.g. `TargetEnv-v0`, `JoystickEnv-v0`, and so on.
-
-
-## Citation
-
-Please cite the following paper if you find our work useful.
-
-```bibtex
-@article{ling2020character,
-  author    = {Ling, Hung Yu and Zinno, Fabio and Cheng, George and van de Panne, Michiel},
-  title     = {Character Controllers Using Motion VAEs},
-  year      = {2020},
-  publisher = {Association for Computing Machinery},
-  volume    = {39},
-  number    = {4},
-  journal   = {ACM Trans. Graph.}
-}
-```
+The model of motion parser is stored in **motion_parser/models.py** 
